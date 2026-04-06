@@ -2,6 +2,7 @@
 using LabWork2.Factories;
 using LabWork2.Models;
 
+//something for merge request commit practice
 class Program
 {
     private static PetOwner _owner = new PetOwner { Name = "Віталій" };
