@@ -1,0 +1,55 @@
+@using HotelSystem.BLL.DTOs
+@model List<HotelSystem.BLL.DTOs.ReservationDto>
+
+@{
+    ViewData["Title"] = "Бронювання";
+}
+
+<h2 class="mb-4">Керування клієнтами</h2>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle shadow-sm bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Номер</th>
+                <th>Клієнт</th>
+                <th>Дата заїзду</th>
+                <th>Дні</th>
+                <th>До сплати</th>
+                <th class="text-center">Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ReservationDto res in Model)
+            {
+                <tr>
+                    <td class="fw-bold">№ @res.RoomNumber</td>
+                    <td>@res.CustomerName</td>
+                    <td>@res.ArrivalDate.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@res.StayDurationDays</td>
+                    <td class="fw-bold text-primary">@res.FinalPrice грн</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <form asp-action="CheckIn" method="post">
+                                <input type="hidden" name="id" value="@res.Id" />
+                                <button type="submit" class="btn btn-primary btn-sm">Заселитися</button>
+                            </form>
+                            
+                            <form asp-action="Finish" method="post">
+                                <input type="hidden" name="id" value="@res.Id" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Завершити/Скасувати?')">Виселити/Cкасувати</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted mt-3">
+            <em>Немає активних бронювань.</em>
+        </div>
+    }
+</div>

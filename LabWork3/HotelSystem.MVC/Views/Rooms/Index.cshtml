@@ -1,0 +1,76 @@
+@using HotelSystem.BLL.DTOs
+@model List<HotelSystem.BLL.DTOs.RoomDto>
+
+@{
+    ViewData["Title"] = "Номерний фонд";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="btn-group" role="group">
+        <a asp-action="Index" asp-route-onlyAvailable="false" 
+           class="btn @(ViewBag.OnlyAvailable == false ? "btn-primary" : "btn-outline-secondary")">
+            Всі номери
+        </a>
+        <a asp-action="Index" asp-route-onlyAvailable="true" 
+           class="btn @(ViewBag.OnlyAvailable == true ? "btn-success" : "btn-outline-success")">
+            Тільки вільні
+        </a>
+    </div>
+</div>
+
+<h2 class="mb-4">Номери</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle shadow-sm bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Номер</th>
+                <th>Категорія</th>
+                <th>Ціна за добу</th>
+                <th>Статус</th>
+                <th>Бронювання</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (RoomDto room in Model)
+            {
+                <tr>
+                    <td class="fw-bold">№ @room.RoomNumber</td>
+                    <td>@room.Category</td>
+                    <td class="text-primary fw-bold">@room.Price грн</td>
+                    <td>
+                        <span
+                            class="badge @(room.Status == "Available" ? "bg-success" : room.Status == "Reserved" ? "bg-warning text-dark" : "bg-danger")">
+                            @room.Status
+                        </span>
+                    </td>
+                    <td>
+                        @if (room.Status == "Available")
+                        {
+                            <form asp-action="Book" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="roomId" value="@room.Id" />
+                                <input type="text" name="customerName" class="form-control form-control-sm"
+                                    placeholder="Ім'я клієнта" required style="max-width: 150px;" />
+                                <input type="number" name="days" class="form-control form-control-sm" placeholder="Дні" min="1"
+                                    required style="max-width: 80px;" />
+                                <button type="submit" class="btn btn-success btn-sm">Забронювати</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Недоступно</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
